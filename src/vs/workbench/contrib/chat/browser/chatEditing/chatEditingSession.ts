@@ -1051,7 +1051,7 @@ export class ChatEditingSession extends Disposable implements IChatEditingSessio
 		try {
 			// If a notebook isn't open, then use the old synchronization approach.
 			if (this._notebookService.hasSupportedNotebooks(notebookUri) && (this._notebookService.getNotebookTextModel(notebookUri) || ChatEditingModifiedNotebookEntry.canHandleSnapshotContent(initialContent))) {
-				return ChatEditingModifiedNotebookEntry.create(notebookUri, multiDiffEntryDelegate, telemetryInfo, chatKind, initialContent, this._instantiationService);
+				return await ChatEditingModifiedNotebookEntry.create(notebookUri, multiDiffEntryDelegate, telemetryInfo, chatKind, initialContent, this._instantiationService);
 			} else {
 				const ref = await this._textModelService.createModelReference(resource);
 				return this._instantiationService.createInstance(ChatEditingModifiedDocumentEntry, ref, multiDiffEntryDelegate, telemetryInfo, chatKind, initialContent);
@@ -1064,7 +1064,7 @@ export class ChatEditingSession extends Disposable implements IChatEditingSessio
 			await this._bulkEditService.apply({ edits: [{ newResource: resource }] });
 			this._editorService.openEditor({ resource, options: { inactive: true, preserveFocus: true, pinned: true } });
 			if (this._notebookService.hasSupportedNotebooks(notebookUri)) {
-				return ChatEditingModifiedNotebookEntry.create(resource, multiDiffEntryDelegate, telemetryInfo, chatKind, initialContent, this._instantiationService);
+				return await ChatEditingModifiedNotebookEntry.create(resource, multiDiffEntryDelegate, telemetryInfo, ChatEditKind.Created, initialContent, this._instantiationService);
 			} else {
 				return this._createModifiedFileEntry(resource, telemetryInfo, true, initialContent);
 			}
@@ -1159,7 +1159,7 @@ class ChatEditingSessionStorage {
 			this._logService.debug(`chatEditingSession: Restoring editing session at ${stateFilePath.toString()}`);
 			const stateFileContent = await this._fileService.readFile(stateFilePath);
 			const data = JSON.parse(stateFileContent.value.toString()) as IChatEditingSessionDTO;
-			if (data.version !== STORAGE_VERSION) {
+			if (!COMPATIBLE_STORAGE_VERSIONS.includes(data.version)) {
 				return undefined;
 			}
 
@@ -1356,7 +1356,8 @@ interface IModifiedEntryTelemetryInfoDTO {
 
 type ResourceMapDTO<T> = [string, T][];
 
-const STORAGE_VERSION = 1;
+const COMPATIBLE_STORAGE_VERSIONS = [1, 2];
+const STORAGE_VERSION = 2;
 
 /** Old history uses IChatEditingSessionSnapshotDTO, new history uses IChatEditingSessionSnapshotDTO. */
 interface IChatEditingSessionDTO {

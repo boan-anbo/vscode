@@ -700,6 +700,7 @@ have to be updated for changes to the rules above, or to support more deeply nes
 	flex-wrap: wrap;
 	align-items: center;
 	gap: 4px;
+	max-width: 100%;
 }
 
 .chat-related-files .monaco-button-dropdown .monaco-text-button {
@@ -1120,6 +1121,10 @@ have to be updated for changes to the rules above, or to support more deeply nes
 	color: var(--vscode-descriptionForeground);
 }
 
+.action-item.chat-attached-context-attachment.chat-add-files span.keybinding {
+	display: none;
+}
+
 .action-item.chat-attached-context-attachment.chat-add-files .action-label,
 .interactive-session .chat-attached-context .chat-attached-context-attachment {
 	display: flex;
@@ -1195,7 +1200,7 @@ have to be updated for changes to the rules above, or to support more deeply nes
 	flex-wrap: wrap;
 	cursor: default;
 	gap: 4px;
-	width: 100%;
+	max-width: 100%;
 }
 
 .interactive-session .interactive-input-part.compact .chat-attached-context {

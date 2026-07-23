@@ -835,7 +835,7 @@ suite('ProtocolServerHandler', () => {
 				source: {
 					kind: ChatSourceKind.SideChat,
 					chat: buildDefaultChatUri(sessionUri),
-					turn: { kind: ChatSourceTurnKind.Active, turnId: 'turn-active' },
+					turnId: 'turn-active',
 				},
 			}));
 			const resp = await responsePromise;

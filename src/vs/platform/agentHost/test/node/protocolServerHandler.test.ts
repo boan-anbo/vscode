@@ -795,7 +795,7 @@ suite('ProtocolServerHandler', () => {
 			});
 		});
 
-		test('createChat forwards a legacy fork source to the agent service', async () => {
+		test('createChat forwards a fork source to the agent service', async () => {
 			stateManager.createSession(makeSessionSummary());
 			const transport = connectClient('client-cc');
 			transport.sent.length = 0;
@@ -804,7 +804,7 @@ suite('ProtocolServerHandler', () => {
 			transport.simulateMessage(request(2, 'createChat', {
 				channel: sessionUri,
 				chat: peerChat,
-				source: { chat: buildDefaultChatUri(sessionUri), turnId: 'turn-1' },
+				source: { kind: ChatSourceKind.Fork, chat: buildDefaultChatUri(sessionUri), turnId: 'turn-1' },
 			}));
 			const resp = await responsePromise;
 
@@ -820,6 +820,33 @@ suite('ProtocolServerHandler', () => {
 						fork: { source: URI.parse(buildDefaultChatUri(sessionUri)), turnId: 'turn-1' },
 					},
 				}],
+			});
+		});
+
+		test('createChat rejects a source without kind', async () => {
+			stateManager.createSession(makeSessionSummary());
+			const transport = connectClient('client-cc');
+			transport.sent.length = 0;
+			const responsePromise = waitForResponse(transport, 2);
+
+			transport.simulateMessage(request(2, 'createChat', {
+				channel: sessionUri,
+				chat: peerChat,
+				source: {
+					chat: buildDefaultChatUri(sessionUri),
+					turnId: 'turn-1',
+				},
+			}));
+			const resp = await responsePromise as { error?: { code: number; message: string } };
+
+			assert.deepStrictEqual({
+				code: resp.error?.code,
+				message: resp.error?.message,
+				created: agentService.createdChats,
+			}, {
+				code: JsonRpcErrorCodes.InvalidParams,
+				message: 'Unsupported createChat source kind: undefined',
+				created: [],
 			});
 		});
 
@@ -865,7 +892,7 @@ suite('ProtocolServerHandler', () => {
 				channel: sessionUri,
 				chat: peerChat,
 				source: {
-					kind: 'fork',
+					kind: 'unknown',
 					chat: buildDefaultChatUri(sessionUri),
 					turnId: 'turn-1',
 				},
@@ -878,7 +905,7 @@ suite('ProtocolServerHandler', () => {
 				created: agentService.createdChats,
 			}, {
 				code: JsonRpcErrorCodes.InvalidParams,
-				message: 'Unsupported createChat source kind: fork',
+				message: 'Unsupported createChat source kind: unknown',
 				created: [],
 			});
 		});

@@ -956,7 +956,7 @@ export class AgentHostSessionHandler extends Disposable implements IChatSessionC
 						...(completionMeta.displayName !== undefined ? { displayName: completionMeta.displayName } : {}),
 						...(completionMeta.description !== undefined ? { description: completionMeta.description } : {}),
 						...(attachment._meta !== undefined && { _meta: attachment._meta }),
-					});
+					}, attachment.label);
 				}
 				return undefined;
 			}
@@ -968,7 +968,7 @@ export class AgentHostSessionHandler extends Disposable implements IChatSessionC
 					displayName: attachment.label,
 					isDirectory: attachment.displayKind === 'directory',
 					...(attachment._meta !== undefined && { _meta: attachment._meta }),
-				});
+				}, attachment.label);
 			}
 			default:
 				// Embedded resources will be added when the workbench grows first-class support for them.

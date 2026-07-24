@@ -436,7 +436,8 @@ suite('RemoteAgentHostProtocolClient', () => {
 		test('forwards a side chat (`/btw`) source tagged with kind "sideChat"', async () => {
 			const { client, transport } = createClient();
 
-			const resultPromise = client.createChat(sessionUri, chatUri, { sideChat: { source: sourceUri, turnId: 'turn-1' } });
+			const selection = { text: '  selected text  ', responsePartId: 'response-part-1' };
+			const resultPromise = client.createChat(sessionUri, chatUri, { sideChat: { source: sourceUri, turnId: 'turn-1', selection } });
 
 			assert.deepStrictEqual(transport.sentMessages[0], {
 				jsonrpc: '2.0',
@@ -445,7 +446,7 @@ suite('RemoteAgentHostProtocolClient', () => {
 				params: {
 					channel: sessionUri.toString(),
 					chat: chatUri.toString(),
-					source: { kind: ChatSourceKind.SideChat, chat: sourceUri.toString(), turnId: 'turn-1' },
+					source: { kind: ChatSourceKind.SideChat, chat: sourceUri.toString(), turnId: 'turn-1', selection },
 				},
 			});
 

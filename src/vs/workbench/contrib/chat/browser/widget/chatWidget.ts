@@ -58,7 +58,6 @@ import { IChatModel, IChatModelInputState, IChatResponseModel, logChangesToState
 import { ChatMode, getModeNameForTelemetry, IChatMode } from '../../common/chatModes.js';
 import { chatAgentLeader, ChatRequestAgentPart, ChatRequestDynamicVariablePart, ChatRequestSlashCommandPart, ChatRequestSlashPromptPart, ChatRequestToolPart, ChatRequestToolSetPart, chatSubcommandLeader, formatChatQuestion, IParsedChatRequest } from '../../common/requestParser/chatParserTypes.js';
 import { ChatRequestParser } from '../../common/requestParser/chatRequestParser.js';
-import { ChatMessageRole, IChatMessage } from '../../common/languageModels.js';
 import { getDynamicVariablesForWidget, getSelectedToolAndToolSetsForWidget } from '../attachments/chatVariables.js';
 import { ChatRequestQueueKind, ChatSendResult, IChatLocationData, IChatSendRequestOptions, IChatService } from '../../common/chatService/chatService.js';
 import { IChatSessionsService, localChatSessionType } from '../../common/chatSessionsService.js';
